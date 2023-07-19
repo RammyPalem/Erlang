@@ -7,7 +7,6 @@ sudo apt-get install wget apt-transport-https -y
 # Add erlang repository key
 sudo wget -0- https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc | sudo apt-key add -
 
-
 #Add erlang Repository
 echo "deb https://packages.erlang-solutions.com/ubuntu focal contrib" | sudo tee /etc/apt/sources.list.d/erlang-solution.list
 
