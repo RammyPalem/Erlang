@@ -1,0 +1,18 @@
+#!/bin/bash
+## ubuntu
+
+set +x
+## install prereq's for erlang
+sudo apt-get update
+sudo apt-get install wget libssl-dev clang-format clang-tidy clang-tools clang clangd libc++-dev libc++1 libc++abi-dev libc++abi1 libclang-dev libclang1 liblldb-dev libllvm-ocaml-dev libomp-dev libomp5 lld lldb llvm-dev llvm-runtime llvm python3-clang automake autoconf libncurses5-dev -y
+# Add erlang repository key
+sudo wget -0- https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc | sudo apt-key add -y
+
+## install erlang
+mkdir /tmp/erlang_install && cd /tmp/erlang_install
+sudo wget erlang.org/download/otp_src_20.1.tar.gz && tar zxvf otp_src_20.1.tar.gz && cd otp_src_20.1
+sudo ./configure && make && make install
+
+# Delete the zip/tar file.
+ cd /tmp/erlang_install
+ rm -rf otp_src_20.1  otp_src_20.1.tar.gz
