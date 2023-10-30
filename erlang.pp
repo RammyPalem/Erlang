@@ -18,6 +18,7 @@ class erlang_install {
     ensure => 'installed',
   }
 
+
   # Download and install Erlang/OTP 20.3 if not found or not at the desired version
   exec { 'install-erlang':
     command  => "wget https://www.erlang.org/download/otp_src_${desired_version}.tar.gz -O /tmp/otp_src_${desired_version}.tar.gz && tar -xzvf /tmp/otp_src_${desired_version}.tar.gz -C /tmp && cd /tmp/otp_src_${desired_version} && ./configure && make && make install",
