@@ -18,24 +18,14 @@ class erlang_install {
 
   # Check if Erlang is already installed at the desired version
   exec { 'check-erlang-version':
-    command => "/usr/lib/erlang/bin/erl -eval 'io:format(\"~s\", [erlang:system_info(otp_release)]), halt().' -noshell | grep -q $desired_version",
-    path    => ['/usr/lib/erlang/bin', '/bin', '/usr/bin'],
-    onlyif  => "/usr/bin/test -x /usr/lib/erlang/bin/erl",
+    command => "dpkg -l | grep '^ii' | grep esl-erlang | grep $desired_version",
+    path    => ['/bin', '/usr/bin'],
   }
 
-  # Install Clang-related packages and llvm-runtime
-  package { [
-    'clang-format',
-    'clang-tools',
-    'clang',
-    'llvm-runtime',  # Add llvm-runtime package here
-  ]:
-    ensure => 'installed',
-  }
-
-  # Install Erlang/OTP from the repository
+  # Install Erlang/OTP from the repository if not installed or not at the desired version
   package { 'esl-erlang':
-    ensure => $desired_version,
-    require => [Exec['check-erlang-version'], Package['clang-format', 'clang-tools', 'clang', 'llvm-runtime']],
+    ensure  => $desired_version,
+    require => Apt::Source['erlang-solutions'], # Ensure the source is added first
+    unless  => "dpkg -l | grep '^ii' | grep esl-erlang | grep $desired_version",
   }
 }
