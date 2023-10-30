@@ -1,16 +1,19 @@
 class erlang_install {
   $desired_version = '20.3'
 
-  $current_version = inline_template('<%= scope(functions["dpkgquery"]("erlang")) %>')
-
-  package { 'esl-erlang':
-    ensure => installed,
-    notify => Exec['download-install-erlang'],
+  # Check if Erlang is already installed at the desired version
+  exec { 'check-erlang-version':
+    command => "erl -eval 'io:format(\"~s\", [erlang:system_info(otp_release)]), halt().' -noshell | grep -q $desired_version",
+    path    => ['/usr/lib/erlang/bin', '/bin', '/usr/bin'],
+    unless  => "erl -eval 'io:format(\"~s\", [erlang:system_info(otp_release)]), halt().' -noshell | grep -q $desired_version",
+    require => Package['esl-erlang'],
   }
 
-  exec { 'download-install-erlang':
-    command => "wget https://packages.erlang-solutions.com/ubuntu/pool/esl-erlang_${desired_version}~ubuntu~$(lsb_release -c -s)_amd64.deb -O /tmp/esl-erlang.deb && dpkg -i /tmp/esl-erlang.deb",
-    creates => '/usr/lib/erlang/erts-' + $desired_version,
-    require => Package['esl-erlang'],
+  # Download and install Erlang/OTP 20.3 if not found or not at the desired version
+  exec { 'install-erlang':
+    command  => "wget https://www.erlang.org/download/otp_src_${desired_version}.tar.gz -O /tmp/otp_src_${desired_version}.tar.gz && tar -xzvf /tmp/otp_src_${desired_version}.tar.gz -C /tmp && cd /tmp/otp_src_${desired_version} && ./configure && make && make install",
+    creates  => "/usr/local/lib/erlang/erts-${desired_version}",
+    unless   => "erl -eval 'io:format(\"~s\", [erlang:system_info(otp_release)]), halt().' -noshell | grep -q $desired_version",
+    require  => Exec['check-erlang-version'],
   }
 }
