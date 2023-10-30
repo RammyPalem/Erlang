@@ -1,7 +1,7 @@
 class erlang_install {
   $desired_version = '20.3'
 
-# Add the Erlang Solutions repository
+  # Add the Erlang Solutions repository
   apt::source { 'erlang-solutions':
     location   => 'https://packages.erlang-solutions.com/ubuntu',
     key        => {
@@ -15,23 +15,23 @@ class erlang_install {
       deb  => true,
     },
   }
-  # Check if Erlang is installed
-  $erlang_installed = package { 'esl-erlang':
-    ensure => 'installed',
-  }
 
-  # Check if Erlang is at the desired version (adjust the path to erl as needed)
+  # Check if Erlang is already installed at the desired version
   exec { 'check-erlang-version':
-    command => "erl -eval 'io:format(\"~s\", [erlang:system_info(otp_release)]), halt().' -noshell | grep -q $desired_version",
-    path    => ['/usr/lib/erlang/bin', '/bin', '/usr/bin'],
-    notify  => Exec['install-erlang'],
+    command => "dpkg -l | grep '^ii' | grep esl-erlang | grep $desired_version",
+    path    => ['/bin', '/usr/bin'],
   }
 
-  # Download and install Erlang/OTP if not found or not at the desired version
-  exec { 'install-erlang':
-    command  => "wget https://packages.erlang-solutions.com/ubuntu/pool/esl-erlang_${desired_version}~ubuntu~$(lsb_release -c -s)_amd64.deb -O /tmp/esl-erlang.deb && dpkg -i /tmp/esl-erlang.deb",
-    creates  => "/usr/lib/erlang/erts-${desired_version}",
-    unless   => "erl -eval 'io:format(\"~s\", [erlang:system_info(otp_release)]), halt().' -noshell | grep -q $desired_version",
-    require  => Package['esl-erlang'],
+  # Install additional packages like Clang
+  package { [
+    'esl-erlang',    # Install Erlang/OTP
+    'clang',         # Add other packages here
+    'clang-format',
+    'clang-tools',
+    'llvm-runtime',
+  ]:
+    ensure  => $desired_version, # Specify the version if applicable
+    require => Apt::Source['erlang-solutions'], # Ensure the source is added first
+    unless  => "dpkg -l | grep '^ii' | grep $_ | grep $desired_version",
   }
 }
