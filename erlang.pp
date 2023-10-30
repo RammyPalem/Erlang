@@ -5,8 +5,6 @@ class erlang_install {
   exec { 'check-erlang-version':
     command => "erl -eval 'io:format(\"~s\", [erlang:system_info(otp_release)]), halt().' -noshell | grep -q $desired_version",
     path    => ['/usr/lib/erlang/bin', '/bin', '/usr/bin'],
-    unless  => "erl -eval 'io:format(\"~s\", [erlang:system_info(otp_release)]), halt().' -noshell | grep -q $desired_version",
-    require => Package['esl-erlang'],
   }
 
   # Download and install Erlang/OTP 20.3 if not found or not at the desired version
@@ -17,3 +15,4 @@ class erlang_install {
     require  => Exec['check-erlang-version'],
   }
 }
+
