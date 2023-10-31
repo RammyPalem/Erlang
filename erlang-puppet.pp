@@ -1,6 +1,7 @@
 #!/bin/bash
 
 required_version="20.3"
+required_packages=("wget" "libel-dev" "clang-format" "clang-tools" "clang" "clangd" "lib++-dev")
 
 # Check if Erlang is installed
 if erl -eval "erlang:display(erlang:system_info(otp_release)), halt()." -noshell | grep -q "$required_version"; then
@@ -20,6 +21,16 @@ else
   else
     echo "Failed to install Erlang/OTP $required_version."
   fi
+
+  # Install additional dependencies
+  for package in "${required_packages[@]}"; do
+    if ! dpkg -l | grep -q "$package"; then
+      echo "Installing $package..."
+      sudo apt-get install -y "$package"
+    else
+      echo "$package is already installed."
+    fi
+  done
 
   # Clean up the downloaded package
   rm erlang-solutions_1.0_all.deb
