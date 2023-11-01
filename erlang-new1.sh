@@ -7,8 +7,7 @@ sudo apt-get update
 sudo apt-get install -y build-essential autoconf libncurses5-dev libssl-dev m4 java-common clang clang-format
 
 # Download the Erlang/OTP source code (adjust the version if needed)
-wget https://github.com/erlang/otp/archive/OTP-20.3.tar.gz
-tar xvzf OTP-20.3.tar.gz
+wget --no-check-certificate https://www.erlang.org/download/otp_src_20.3.tar.gz
 
 # Build and install Erlang/OTP
 cd otp-OTP-20.3
