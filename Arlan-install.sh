@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# Check if the stored version file exists
+version_file="/path/to/version.txt"
+
+if [ -f "$version_file" ]; then
+  stored_version=$(cat "$version_file")
+  echo "Stored Erlang/OTP version: $stored_version"
+else
+  stored_version=""
+fi
+
 # Check if Erlang/OTP is installed
 erl_version=$(erl -eval 'erlang:display(erlang:system_info(otp_release)), halt().' -noshell 2>/dev/null)
 
@@ -8,13 +18,13 @@ if [ -z "$erl_version" ]; then
   # Proceed with the installation of Erlang/OTP version 20.0
   erl_version="20.0"
 else
-  # Check if Erlang/OTP version is not 20.0
-  if [ "$erl_version" != "20.0" ]; then
+  echo "Installed Erlang/OTP version: $erl_version"
+  if [ "$erl_version" != "$stored_version" ]; then
     echo "Erlang/OTP version $erl_version is installed, but we need version 20.0."
     echo "Proceeding with the installation of Erlang/OTP version 20.0..."
     erl_version="20.0"
   else
-    echo "Erlang/OTP version 20.0 is already installed. No need to install."
+    echo "Erlang/OTP version $erl_version is already installed. No need to install."
     exit 0
   fi
 fi
@@ -36,6 +46,9 @@ cd "otp_src_$erl_version"
 ./configure
 make
 sudo make install
+
+# Store the installed Erlang/OTP version in the file
+echo "$erl_version" > "$version_file"
 
 # Clean up
 cd ..
