@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Update the package manager
-sudo yum update -y
+sudo apt-get update
 
 # Install required dependencies
-sudo yum install -y gcc gcc-c++ glibc-devel make ncurses-devel openssl-devel autoconf java-1.8.0-openjdk-devel
+sudo apt-get install -y build-essential autoconf libncurses5-dev libssl-dev m4 java-common clang clang-format
 
 # Download the Erlang/OTP source code (adjust the version if needed)
 wget https://github.com/erlang/otp/archive/OTP-20.3.tar.gz
