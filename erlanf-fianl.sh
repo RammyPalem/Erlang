@@ -9,7 +9,7 @@ if [ -z "$installed_version" ]; then
   erl_version="20.0"
 else
   echo "Installed Erlang/OTP version: $installed_version"
-  if [ "$installed_version" = "20" ]; then
+  if [ "${installed_version%%.*}" -eq 20 ]; then
     echo "Erlang/OTP version 20 is already installed. No need to install."
     exit 0
   elif [ "$installed_version" != "20.0" ]; then
@@ -21,3 +21,6 @@ else
     exit 0
   fi
 fi
+
+# Rest of the installation script (install Erlang/OTP version $erl_version)
+# ...
