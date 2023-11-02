@@ -1,0 +1,36 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "ErlangInstance": {
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Properties": {
+        "ImageId": "ami-xxxxxxxxxxxxxxxxx", // Replace with your desired AMI ID
+        "InstanceType": "t2.micro",           // Replace with your desired instance type
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Sub": "#!/bin/bash\n"
+              + "apt update -y\n"
+              + "apt install -y wget\n"
+              + "mkdir -p ~/erlang\n"
+              + "wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb -O ~/erlang/erlang.deb\n"
+              + "dpkg-deb -x ~/erlang/erlang.deb ~/erlang\n"
+              + "export PATH=~/erlang/usr/lib/erlang/bin:$PATH\n"
+              + "echo 'export PATH=~/erlang/usr/lib/erlang/bin:$PATH' >> ~/.bashrc\n"
+              + "source ~/.bashrc\n"
+              + "rm ~/erlang/erlang.deb\n"
+          }
+        }
+      }
+    },
+    "ErlangInstanceGroup": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "LaunchConfigurationName": {
+          "Ref": "ErlangInstance"
+        },
+        "MinSize": 1,
+        "MaxSize": 1
+      }
+    }
+  }
+}
