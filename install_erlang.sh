@@ -19,6 +19,11 @@ check_erlang_version
 
 # Add your script logic here
 # ...
+# Call the function to check Erlang version
+check_erlang_version
+
+# Add your script logic here
+# ...
 # Install dependencies for building Erlang
 sudo apt-get update
 sudo apt-get install -y build-essential libncurses5-dev libssl-dev m4
