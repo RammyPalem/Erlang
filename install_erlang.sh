@@ -1,24 +1,22 @@
 #!/bin/bash
-## ubuntu
 
+# Add the Erlang Solutions repository GPG key
+wget -O - https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc | sudo apt-key add -
 
-### install asdf 
-apt install curl git
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf
-echo ". $HOME/.asdf/asdf.sh" >> ~/.bashrc
-source ~/.bashrc
-asdf --version
-if [ $? -eq 0 ]; then
-    ## install prereq's for erlang
-    apt update
-    sudo apt-get install libssl-dev clang-format clang-tidy clang-tools clang clangd libc++-dev libc++1 libc++abi-dev libc++abi1 libclang-dev libclang1 liblldb-dev libllvm-ocaml-dev libomp-dev libomp5 lld lldb llvm-dev llvm-runtime llvm python3-clang automake autoconf libncurses5-dev
-    ## install erlang
-    asdf plugin add erlang
-    ## this will take some time ~ 10 min
-    asdf install erlang 25.3
-    asdf global erlang 25.3
-    exit 0
-else
-    echo "unable to find asdf"
-    exit 0
-fi
+# Add the Erlang Solutions repository to your apt sources
+echo "deb https://packages.erlang-solutions.com/ubuntu focal contrib" | sudo tee /etc/apt/sources.list.d/erlang-solutions.list
+
+# Update your apt package list
+sudo apt-get update
+
+# Install Erlang/OTP 20.3
+sudo apt-get install -y erlang=1:20.3
+
+# Verify the installed Erlang version
+erl -eval "io:format(\"Erlang/OTP ~s~n\", [erlang:system_info(otp_release)]), halt()."
+
+# Remove the repository file
+sudo rm /etc/apt/sources.list.d/erlang-solutions.list
+
+# Update apt once more
+sudo apt-get update
