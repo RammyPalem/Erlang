@@ -1,0 +1,22 @@
+{
+  "Resources": {
+    "MyEC2Instance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "InstanceType": "t2.micro",
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Sub": "#!/bin/bash -ex\n\
+            sudo apt-get update\n\
+            sudo apt-get install -y gnupg2 wget software-properties-common\n\
+            wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb\n\
+            sudo dpkg -i erlang-solutions_2.0_all.deb\n\
+            sudo apt-get update\n\
+            sudo apt-get install -y esl-erlang=1:24.0\n\
+            # You can add additional setup or configuration steps here"
+          }
+        }
+      }
+    }
+  }
+}
