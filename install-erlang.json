@@ -1,3 +1,31 @@
+
+{
+  "Resources": {
+    "MyLaunchTemplate": {
+      "Type": "AWS::EC2::LaunchTemplate",
+      "Properties": {
+        "LaunchTemplateName": "MyUbuntu20Instance",
+        "VersionDescription": "Initial version",
+        "LaunchTemplateData": {
+          "InstanceType": "t2.micro",
+          "KeyName": "your-key-pair-name",
+          "ImageId": "ami-0c55b159cbfafe1f0", // Ubuntu 20.04 AMI ID
+          "UserData": {
+            "Fn::Base64": {
+              "Fn::Sub": "#!/bin/bash -ex\n\
+              # Your custom user data script here"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
 {
   "Resources": {
     "MyEC2Instance": {
