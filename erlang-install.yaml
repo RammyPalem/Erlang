@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Create an EC2 instance with Auto Scaling
+
+Resources:
+  MyLaunchConfiguration:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      ImageId: ami-0c55b159cbfafe1f0  # Replace with your Ubuntu 20.04 AMI ID
+      InstanceType: t2.micro
+      KeyName: your-key-pair-name  # Replace with your key pair name
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -ex
+            # Your custom user data script here
+
+  MyAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      LaunchConfigurationName:
+        Ref: MyLaunchConfiguration
+      MinSize: 1
+      MaxSize: 4
+      DesiredCapacity: 2
+      VPCZoneIdentifier:
+        - subnet-12345678  # Replace with your subnet IDs
+        - subnet-87654321  # Replace with your subnet IDs
+      AvailabilityZones:
+        - us-east-1a  # Replace with your AZs
+        - us-east-1b  # Replace with your AZs
+      Tags:
+        - Key: Name
+          Value: MyAutoScalingInstance
+          PropagateAtLaunch: true
