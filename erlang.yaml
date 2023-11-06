@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Create an EC2 instance with Erlang/OTP 20.3
+
+Resources:
+  MyEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: <your-ami-id>
+      InstanceType: t2.micro
+      UserData:
+        Fn::Base64:
+          Fn::Sub: |
+            #!/bin/bash
+            # Update the package list and install necessary packages
+            sudo yum update -y
+            sudo yum install -y epel-release
+            sudo yum install -y erlang-20.3
+
+Outputs:
+  PublicIpAddress:
+    Description: Public IP address of the EC2 instance
+    Value:
+      Fn::GetAtt:
+        - MyEC2Instance
+        - PublicIp
