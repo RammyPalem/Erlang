@@ -11,8 +11,18 @@ Resources:
       UserData:
         Fn::Base64:
           !Sub |
-            #!/bin/bash -ex
-            # Your custom user data script here
+            #!/bin/bash
+            # Update the package list and install build dependencies
+            sudo apt-get update -y
+            sudo apt-get install -y build-essential autoconf m4 libncurses5-dev libssh-dev unixodbc-dev libssl-dev
+
+            # Download and build Erlang/OTP 20.3 from source
+            sudo wget https://github.com/erlang/otp/archive/OTP-20.3.tar.gz
+            tar xzf OTP-20.3.tar.gz
+            cd otp-OTP-20.3
+            sudo ./otp_build autoconf
+            sudo ./configure
+            sudo make && sudo make instal
 
   MyAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
