@@ -1,0 +1,14 @@
+[uwsgi]
+http-timeout = 86400
+http-timeout-route = .* 86400
+route-uri ^/keepalive$ rewrite: ^/keepalive /static/keepalive.txt
+route-uri ^/keepalive$ last:
+
+route-label = pgadmin
+
+route-host = ^pgadmin\.(.*)$ rewrite: /$1
+route-uri = ^/((?:index\.html|pgadmin4|static|translations|.*\.ico|.*\.png|.*\.css|.*\.js|.*\.woff2|.*\.woff|.*\.ttf|.*\.eot|.*\.map|.*\.svg|.*\.gif|.*\.jpg|.*\.jpeg|.*\.otf|.*\.map|.*\.scss|.*\.tmpl|.*\.md5|.*\.txt))$ last:
+
+route-host = ^(?!pgadmin\.).*$ last:
+
+http-timeout-label = pgadmin 86400
